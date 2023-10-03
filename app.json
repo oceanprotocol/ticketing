@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "OceanTickets",
+    "slug": "oceantickets",
+    "scheme": "oceantickets",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "backgroundColor": "#000000",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "backgroundColor": "#000000",
+      "bundleIdentifier": "com.tom1145.oceantickets",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
+    },
+    "android": {
+      "backgroundColor": "#000000",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png"
+      },
+      "package": "com.tom1145.oceantickets",
+      "runtimeVersion": "1.0.0"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3bdb69a4-0984-4fdd-9671-7380832412f7"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3bdb69a4-0984-4fdd-9671-7380832412f7"
+    }
+  }
+}
