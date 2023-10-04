@@ -86,3 +86,127 @@ eas update
 ```
 
 Now everything is set. You can go to expo-go app from your phone and should see the latest build ready to launch.
+
+# Buy a fixed-rate asset
+
+Buying an asset with fixed-rate pricing schema and datatoken of type 1 involves 2 steps: buying 1 datatoken with OCEAN tokens and sending it to the publisher to place the order for that asset.
+
+> Note: Make sure you have enough `$OCEAN` in your wallet in order to purchase the asset. You can find [here](https://docs.oceanprotocol.com/discover/networks) all info about the supported networks
+
+1. Add a function `buyDataToken`:
+
+This buys 1 datatoken with `$OCEAN` from `FixedRateExchange`.
+
+```typescript jsx
+const buyDataToken = useCallback(async () => {
+  const signer = web3Provider.getSigner();
+  const address = await web3Provider.getSigner().getAddress();
+}, [web3Provider, dataToken?.address]);
+```
+
+Calculate how much `$OCEAN` we need in order to buy 1 datatoken:
+```typescript
+const dataTokenAmount = '1';
+
+const fixedRateExchange = new FixedRateExchange(oceanConfig.fixedRateExchangeAddress!, signer);
+const exchangeId = await fixedRateExchange.generateExchangeId(oceanConfig.oceanTokenAddress!, dataToken?.address!);
+
+const priceInfo = await fixedRateExchange.calcBaseInGivenDatatokensOut(exchangeId, dataTokenAmount);
+const oceanAmount = priceInfo.baseTokenAmount;
+```
+
+Approve the FixedRateExchange contract to take `$OCEAN` from your wallet:
+```typescript
+const approveResult = await approve(
+    signer,
+    oceanConfig,
+    address,
+    oceanConfig.oceanTokenAddress!,
+    oceanConfig.fixedRateExchangeAddress!,
+    oceanAmount,
+);
+if (!approveResult) {
+  throw new Error('Approve contract failed');
+}
+
+/**
+ * approveResult can be:
+ * - transaction response, in which case we need to wait for the transaction to be executed
+ * - a number, which means no transaction was published because there is already an approval for the amount requested
+ */
+if (typeof approveResult !== 'number') {
+  await approveResult.wait(1);
+}
+```
+
+Buy 1 datatoken with `$OCEAN`:
+```typescript
+const buyTx = await fixedRateExchange.buyDatatokens(exchangeId, dataTokenAmount, oceanAmount);
+if (!buyTx) {
+  throw new Error('Buy data token failed');
+}
+
+await buyTx.wait(1);
+```
+
+2. Add a function `createOrder`:
+
+This creates the order to send the datatoken to the published and buy the asset.
+
+```typescript jsx
+const createOrder = useCallback(async () => {
+  const signer = web3Provider.getSigner();
+  const address = await web3Provider.getSigner().getAddress();
+}, [web3Provider, dataToken?.address, dataTokenService]);
+```
+
+Initialize the provider and add the provider fees:
+```typescript
+const initializeData = await ProviderInstance.initialize(
+  asset?.id!,
+  dataTokenService?.id!,
+  0,
+  address,
+  dataTokenService?.serviceEndpoint!,
+);
+
+const providerFees: ProviderFees = {
+  providerFeeAddress: initializeData.providerFee.providerFeeAddress,
+  providerFeeToken: initializeData.providerFee.providerFeeToken,
+  providerFeeAmount: initializeData.providerFee.providerFeeAmount,
+  v: initializeData.providerFee.v,
+  r: initializeData.providerFee.r,
+  s: initializeData.providerFee.s,
+  providerData: initializeData.providerFee.providerData,
+  validUntil: initializeData.providerFee.validUntil,
+};
+```
+
+Create the order:
+```typescript
+const dataTokenInstance = new Datatoken(signer);
+
+const tx = await dataTokenInstance.startOrder(dataToken?.address!, address, 0, providerFees);
+if (!tx) {
+  throw new Error('Create order failed');
+}
+
+await tx.wait(1);
+```
+
+3. Call both functions in `onPressBuy`:
+```typescript
+const onPressBuy = useCallback(async () => {
+  setLoading(true);
+
+  try {
+    await buyDataToken();
+    await createOrder();
+    Alert.alert('Success', 'Service bought with success!');
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+}, [buyDataToken, createOrder]);
+```
