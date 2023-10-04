@@ -1,0 +1,48 @@
+{
+  "cli": {
+    "version": ">= 5.2.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "node": "16.20.0",
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "node": "16.20.0",
+      "env": {
+        "EXPO_PUBLIC_CHAIN_ID": "80001",
+        "EXPO_PUBLIC_RPC_URL": "https://rpc-mumbai.maticvigil.com/",
+        "EXPO_PUBLIC_WALLET_CONNECT_PROJECT_ID": "804a141187f12f5d258cfd6d4499aff5",
+        "EXPO_PUBLIC_MAGIC_API_KEY": "pk_live_BE804784111093F0",
+        "EXPO_PUBLIC_OCEAN_DID": "did:op:2497bdb5c4eed690bfb47f81d3d37d9cc6aaf2a05527a392d622396854372a92",
+        "EXPO_PUBLIC_FIXED_RATE_ASSET_DID": "did:op:2497bdb5c4eed690bfb47f81d3d37d9cc6aaf2a05527a392d622396854372a92",
+        "EXPO_PUBLIC_OCEAN_CONTRACT": "0xd8992Ed72C445c35Cb4A2be468568Ed1079357c8"
+      }
+    },
+    "test": {
+      "node": "16.20.0",
+      "env": {
+        "EXPO_PUBLIC_CHAIN_ID": "80001",
+        "EXPO_PUBLIC_RPC_URL": "https://rpc-mumbai.maticvigil.com/",
+        "EXPO_PUBLIC_WALLET_CONNECT_PROJECT_ID": "804a141187f12f5d258cfd6d4499aff5",
+        "EXPO_PUBLIC_MAGIC_API_KEY": "pk_live_BE804784111093F0",
+        "EXPO_PUBLIC_OCEAN_DID": "did:op:2497bdb5c4eed690bfb47f81d3d37d9cc6aaf2a05527a392d622396854372a92",
+        "EXPO_PUBLIC_FIXED_RATE_ASSET_DID": "did:op:2497bdb5c4eed690bfb47f81d3d37d9cc6aaf2a05527a392d622396854372a92",
+        "EXPO_PUBLIC_OCEAN_CONTRACT": "0xd8992Ed72C445c35Cb4A2be468568Ed1079357c8"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
